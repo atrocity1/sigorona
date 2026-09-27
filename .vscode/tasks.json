@@ -6,8 +6,8 @@
         {
             "label": "DM",
             "type": "shell",
-            "command": "C:/byond/bin/dm.exe",
-            "args": ["C:/NSV-Luna-Redux-Restoration-master/baystation12.dme"],
+            "command": "${env:ProgramFiles(x86)}/BYOND/bin/dm.exe",
+            "args": ["${workspaceFolder}/baystation12.dme"],
             "problemMatcher": {
                 "owner": "dm",
                 "fileLocation": ["relative", "${workspaceFolder}"],

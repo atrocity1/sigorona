@@ -145,22 +145,21 @@ var/global/datum/controller/occupations/job_master
 					// Log-out during round-start? What a bad boy, no head position for you!
 					if(!V.client) continue
 					var/age = V.client.prefs.age
-					switch(age)
-						if(good_age_minimal - 10 to good_age_minimal)
-							weightedCandidates[V] = 3 // Still a bit young.
-						if(good_age_minimal to good_age_minimal + 10)
-							weightedCandidates[V] = 6 // Better.
-						if(good_age_minimal + 10 to good_age_maximal - 10)
-							weightedCandidates[V] = 10 // Great.
-						if(good_age_maximal - 10 to good_age_maximal)
-							weightedCandidates[V] = 6 // Still good.
-						if(good_age_maximal to good_age_maximal + 10)
-							weightedCandidates[V] = 6 // Bit old, don't you think?
-						if(good_age_maximal to good_age_maximal + 50)
-							weightedCandidates[V] = 3 // Geezer.
-						else
-							// If there's ABSOLUTELY NOBODY ELSE
-							if(candidates.len == 1) weightedCandidates[V] = 1
+					if(age >= good_age_minimal - 10 && age <= good_age_minimal)
+						weightedCandidates[V] = 3 // Still a bit young.
+					else if(age >= good_age_minimal && age <= good_age_minimal + 10)
+						weightedCandidates[V] = 6 // Better.
+					else if(age >= good_age_minimal + 10 && age <= good_age_maximal - 10)
+						weightedCandidates[V] = 10 // Great.
+					else if(age >= good_age_maximal - 10 && age <= good_age_maximal)
+						weightedCandidates[V] = 6 // Still good.
+					else if(age >= good_age_maximal && age <= good_age_maximal + 10)
+						weightedCandidates[V] = 6 // Bit old, don't you think?
+					else if(age >= good_age_maximal && age <= good_age_maximal + 50)
+						weightedCandidates[V] = 3 // Geezer.
+					else
+						// If there's ABSOLUTELY NOBODY ELSE
+						if(candidates.len == 1) weightedCandidates[V] = 1
 
 
 				var/mob/new_player/candidate = pickweight(weightedCandidates)

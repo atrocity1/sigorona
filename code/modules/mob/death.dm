@@ -52,4 +52,3 @@
 
 	living_mob_list -= src
 	dead_mob_list += src
-	return ..(gibbed)

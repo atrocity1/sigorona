@@ -209,7 +209,7 @@
 						if(1)
 							emote("twitch")
 						if(2 to 3)
-							say("[prob(50) ? ";" : ""][pick("цнбмн", "охгдю", "акърэ", "уси", "усеяня", "еаюрэ", "яхяэйх", "онь╗к мюуси", "днкан╗аш", "ясйю", "цнмднм", "уня усеяня", "йюохрюм цнмднм", "уно лсдюй", "яа яняср уси")]")
+							say("[prob(50) ? ";" : ""][pick("О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫", "О©╫О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫ь╗О©╫ О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫О©╫н╗О©╫О©╫", "О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫", "О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫")]")
 					var/old_x = pixel_x
 					var/old_y = pixel_y
 					pixel_x += rand(-2,2)
@@ -623,25 +623,24 @@
 				if(prob(20))
 					src << "<span class='danger'>You feel your face burning and a searing heat in your lungs!</span>"
 
-			switch(breath.temperature)
-				if(-INFINITY to species.cold_level_3)
-					apply_damage(COLD_GAS_DAMAGE_LEVEL_3, BURN, "head", used_weapon = "Excessive Cold")
-					fire_alert = max(fire_alert, 1)
-				if(species.cold_level_3 to species.cold_level_2)
-					apply_damage(COLD_GAS_DAMAGE_LEVEL_2, BURN, "head", used_weapon = "Excessive Cold")
-					fire_alert = max(fire_alert, 1)
-				if(species.cold_level_2 to species.cold_level_1)
-					apply_damage(COLD_GAS_DAMAGE_LEVEL_1, BURN, "head", used_weapon = "Excessive Cold")
-					fire_alert = max(fire_alert, 1)
-				if(species.heat_level_1 to species.heat_level_2)
-					apply_damage(HEAT_GAS_DAMAGE_LEVEL_1, BURN, "head", used_weapon = "Excessive Heat")
-					fire_alert = max(fire_alert, 2)
-				if(species.heat_level_2 to species.heat_level_3)
-					apply_damage(HEAT_GAS_DAMAGE_LEVEL_2, BURN, "head", used_weapon = "Excessive Heat")
-					fire_alert = max(fire_alert, 2)
-				if(species.heat_level_3 to INFINITY)
-					apply_damage(HEAT_GAS_DAMAGE_LEVEL_3, BURN, "head", used_weapon = "Excessive Heat")
-					fire_alert = max(fire_alert, 2)
+			if(breath.temperature <= species.cold_level_3)
+				apply_damage(COLD_GAS_DAMAGE_LEVEL_3, BURN, "head", used_weapon = "Excessive Cold")
+				fire_alert = max(fire_alert, 1)
+			else if(breath.temperature <= species.cold_level_2 && breath.temperature > species.cold_level_3)
+				apply_damage(COLD_GAS_DAMAGE_LEVEL_2, BURN, "head", used_weapon = "Excessive Cold")
+				fire_alert = max(fire_alert, 1)
+			else if(breath.temperature <= species.cold_level_1 && breath.temperature > species.cold_level_2)
+				apply_damage(COLD_GAS_DAMAGE_LEVEL_1, BURN, "head", used_weapon = "Excessive Cold")
+				fire_alert = max(fire_alert, 1)
+			else if(breath.temperature >= species.heat_level_1 && breath.temperature <= species.heat_level_2)
+				apply_damage(HEAT_GAS_DAMAGE_LEVEL_1, BURN, "head", used_weapon = "Excessive Heat")
+				fire_alert = max(fire_alert, 2)
+			else if(breath.temperature > species.heat_level_2 && breath.temperature <= species.heat_level_3)
+				apply_damage(HEAT_GAS_DAMAGE_LEVEL_2, BURN, "head", used_weapon = "Excessive Heat")
+				fire_alert = max(fire_alert, 2)
+			else if(breath.temperature > species.heat_level_3)
+				apply_damage(HEAT_GAS_DAMAGE_LEVEL_3, BURN, "head", used_weapon = "Excessive Heat")
+				fire_alert = max(fire_alert, 2)
 
 			//breathing in hot/cold air also heats/cools you a bit
 			var/temp_adj = breath.temperature - bodytemperature
@@ -721,35 +720,33 @@
 			//Body temperature is too hot.
 			fire_alert = max(fire_alert, 1)
 			if(status_flags & GODMODE)	return 1	//godmode
-			switch(bodytemperature)
-				if(species.heat_level_1 to species.heat_level_2)
-					take_overall_damage(burn=HEAT_DAMAGE_LEVEL_1, used_weapon = "High Body Temperature")
+			if(bodytemperature <= species.heat_level_2)
+				take_overall_damage(burn=HEAT_DAMAGE_LEVEL_1, used_weapon = "High Body Temperature")
+				fire_alert = max(fire_alert, 2)
+			else if(bodytemperature <= species.heat_level_3)
+				if(on_fire)
+					take_overall_damage(burn=HEAT_DAMAGE_LEVEL_3, used_weapon = "Skin Burns")
 					fire_alert = max(fire_alert, 2)
-				if(species.heat_level_2 to species.heat_level_3)
-					if(on_fire)
-						take_overall_damage(burn=HEAT_DAMAGE_LEVEL_3, used_weapon = "Skin Burns")
-						fire_alert = max(fire_alert, 2)
-					else
-						take_overall_damage(burn=HEAT_DAMAGE_LEVEL_2, used_weapon = "High Body Temperature")
-						fire_alert = max(fire_alert, 2)
-				if(species.heat_level_3 to INFINITY)
-					take_overall_damage(burn=HEAT_DAMAGE_LEVEL_3, used_weapon = "High Body Temperature")
+				else
+					take_overall_damage(burn=HEAT_DAMAGE_LEVEL_2, used_weapon = "High Body Temperature")
 					fire_alert = max(fire_alert, 2)
+			else
+				take_overall_damage(burn=HEAT_DAMAGE_LEVEL_3, used_weapon = "High Body Temperature")
+				fire_alert = max(fire_alert, 2)
 
 		else if(bodytemperature < species.cold_level_1)
 			fire_alert = max(fire_alert, 1)
 			if(status_flags & GODMODE)	return 1	//godmode
 			if(!istype(loc, /obj/machinery/atmospherics/unary/cryo_cell))
-				switch(bodytemperature)
-					if(species.cold_level_2 to species.cold_level_1)
-						take_overall_damage(burn=COLD_DAMAGE_LEVEL_1, used_weapon = "Low Body Temperature")
-						fire_alert = max(fire_alert, 1)
-					if(species.cold_level_3 to species.cold_level_2)
-						take_overall_damage(burn=COLD_DAMAGE_LEVEL_2, used_weapon = "Low Body Temperature")
-						fire_alert = max(fire_alert, 1)
-					if(-INFINITY to species.cold_level_3)
-						take_overall_damage(burn=COLD_DAMAGE_LEVEL_3, used_weapon = "Low Body Temperature")
-						fire_alert = max(fire_alert, 1)
+				if(bodytemperature >= species.cold_level_2)
+					take_overall_damage(burn=COLD_DAMAGE_LEVEL_1, used_weapon = "Low Body Temperature")
+					fire_alert = max(fire_alert, 1)
+				else if(bodytemperature >= species.cold_level_3)
+					take_overall_damage(burn=COLD_DAMAGE_LEVEL_2, used_weapon = "Low Body Temperature")
+					fire_alert = max(fire_alert, 1)
+				else
+					take_overall_damage(burn=COLD_DAMAGE_LEVEL_3, used_weapon = "Low Body Temperature")
+					fire_alert = max(fire_alert, 1)
 
 		// Account for massive pressure differences.  Done by Polymorph
 		// Made it possible to actually have something that can protect against high pressure... Done by Errorage. Polymorph now has an axe sticking from his head for his previous hardcoded nonsense!
